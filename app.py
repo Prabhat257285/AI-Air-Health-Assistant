@@ -494,4 +494,4 @@ if prediction:
     elif prediction > 100:
         st.warning("⚠️ Moderate pollution detected. Take precautions.")
     else:
-        st.success(" Air quality is safe today!")
+        st.success("✅ Air quality is safe today!")
