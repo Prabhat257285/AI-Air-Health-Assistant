@@ -292,3 +292,4 @@ for city, condition in city_conditions.items():
 
 import joblib
 joblib.dump(best_model, "best_aqi_model.pkl")
+joblib.dump(X_train.columns,"feature_columns.pkl")

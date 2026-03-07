@@ -11,7 +11,7 @@ st.set_page_config(page_title="AI Air Health Assistant", layout="wide")
 
 # ---------- LOAD MODEL ----------
 model = joblib.load("best_aqi_model.pkl")
-
+feature_columns = joblib.load("feature_columns.pkl")
 # ---------- LOAD DATA ----------
 df = pd.read_csv("air_quality.csv")
 cities = sorted(df["city"].unique())
@@ -149,17 +149,45 @@ if len(city_df) < 4:
 
 last3 = city_df["aqi"].tail(3).values
 latest = city_df.iloc[-1]
-rolling_mean = np.mean(last3)
+rolling_mean = city_df["aqi"].tail(7).mean()
+
+input_data = {
+    "pm25": latest["pm25"],
+    "pm10": latest["pm10"],
+    "no2": latest["no2"],
+    "nh3": latest["nh3"],
+    "so2": latest["so2"],
+    "co": latest["co"],
+    "o3": latest["o3"],
+    "temperature": latest["temperature"],
+    "humidity": latest["humidity"],
+    "aqi_lag1": last3[-1],
+    "aqi_lag2": last3[-2],
+    "aqi_lag3": last3[-3],
+    "aqi_rolling_mean_7": rolling_mean,
+    "city_Jaipur": 1 if city=="Jaipur" else 0,
+    "city_Lucknow": 1 if city=="Lucknow" else 0
+}
+
+features = pd.DataFrame([input_data])
+features = features[feature_columns]
 
 features = np.array([[ 
-    latest["pm25"], latest["pm10"], latest["no2"],
-    latest["so2"], latest["co"], latest["o3"],
-    latest["temperature"], latest["humidity"],
-    last3[-1], last3[-2], last3[-3],latest.get("city_Jaipur", 0), 
-    latest.get("city_Lucknow", 0), 
-    latest.get("city_Delhi", 0),
-
-    rolling_mean
+    latest["pm25"],
+    latest["pm10"],
+    latest["no2"],
+    latest["nh3"],              
+    latest["so2"],
+    latest["co"],
+    latest["o3"],
+    latest["temperature"],
+    latest["humidity"],
+    last3[-1],                  
+    last3[-2],                  
+    last3[-3],                  
+    rolling_mean,               
+    latest.get("city_Jaipur",0),
+    latest.get("city_Lucknow",0)
 ]])
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -199,24 +227,55 @@ if prediction:
 
 # LEFT PANEL
     with col1:
-        st.markdown(f"""
-        <div style="
-        padding:25px;
-        border-radius:18px;
-        background:linear-gradient(145deg,#161b22,#0e1117);
-        box-shadow:0 0 25px rgba(0,0,0,0.6);
-        border-left:8px solid {color};">
-        
-        <h2 style="margin-bottom:10px;">📍 {city}</h2>
-        <p style="opacity:0.7;">Date: {datetime.now().strftime("%d %B %Y")}</p>
-        
-        <h1 style="color:{color}; margin-top:15px;">
+            st.markdown(f"""
+            <div style="
+            padding:30px;
+            border-radius:18px;
+            background:linear-gradient(145deg,#161b22,#0e1117);
+            box-shadow:0 0 25px rgba(0,0,0,0.6);
+            border-left:8px solid {color};
+            ">
+            
+            <h1 style="
+            font-size:44px;
+            font-weight:800;
+            letter-spacing:2px;
+            margin-bottom:6px;
+            background:linear-gradient(90deg,#ffffff,#8be9fd);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            ">
+            {city}
+            </h1>
+
+            <p style="
+            font-size:14px;
+            opacity:0.65;
+            letter-spacing:0.5px;
+            margin-bottom:10px;
+            ">
+            {datetime.now().strftime("%d %B %Y")}
+            </p>
+            
+            <h1 style="
+            color:{color};
+            margin-top:10px;
+            font-size:42px;
+            font-weight:800;
+            letter-spacing:1px;
+            ">
             {status}
-        </h1>
-        
-        <p style="opacity:0.8;">Real-time AI air quality assessment</p>
-        </div>
-        """, unsafe_allow_html=True)
+            </h1>
+            
+            <p style="
+            opacity:0.8;
+            font-size:15px;
+            ">
+            Real-time AI air quality assessment
+            </p>
+
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # RIGHT PANEL — SMOOTH COUNT ANIMATION
