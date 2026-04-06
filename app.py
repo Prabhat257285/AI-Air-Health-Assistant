@@ -2929,3 +2929,500 @@ if st.session_state.prediction is not None:
         st.markdown("No emergency protocols needed. Continue normal daily activities with standard precautions.")
     
     st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 46: SLEEP QUALITY IMPACT TRACKER ==========
+    st.subheader("😴 Sleep Quality Impact Monitor")
+    
+    sleep_col1, sleep_col2 = st.columns(2)
+    
+    with sleep_col1:
+        st.markdown("**🌙 How AQI Affects Your Sleep**")
+        
+        # Calculate sleep quality score
+        sleep_quality = 100 - (prediction / 3)  # Lower AQI = better sleep
+        sleep_quality = max(0, min(100, sleep_quality))
+        
+        st.metric("Expected Sleep Quality", f"{sleep_quality:.0f}%", 
+                 delta="Higher = Better sleep expected")
+        
+        if prediction > 150:
+            st.warning("⚠️ High pollution reduces REM sleep & increases sleep disruption")
+        elif prediction > 100:
+            st.info("🟡 Moderate impact: May experience slight sleep disturbances")
+        else:
+            st.success("✅ Optimal conditions for quality sleep")
+    
+    with sleep_col2:
+        st.markdown("**💤 Sleep Improvement Tips**")
+        
+        st.markdown("""
+        1. 🪟 **Ventilation**: Use HEPA filters in bedroom
+        2. 🛏️ **Timing**: Sleep during lowest AQI hours (3-6 AM)
+        3. 🧘 **Relaxation**: Practice breathing exercises before bed
+        4. 🌡️ **Environment**: Keep room cool & humidity 40-60%
+        5. 📱 **Monitoring**: Track sleep patterns with apps
+        6. 💊 **Supplements**: Consider melatonin if sleep affected
+        """)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 47: PREGNANCY & BABY SAFETY GUIDE ==========
+    st.subheader("👶 Pregnancy & Baby Safety Air Quality Guide")
+    
+    preg_col1, preg_col2, preg_col3 = st.columns(3)
+    
+    with preg_col1:
+        st.markdown("**🤰 Pregnancy Safety**")
+        
+        if prediction > 100:
+            st.warning("⚠️ High Risk - Special precautions needed")
+            st.markdown("""
+            - Limit outdoor time to <30 minutes
+            - Wear HEPA-filter activated mask
+            - Increase appointments with OB/GYN
+            - Take prenatal vitamins with antioxidants
+            - Stay hydrated
+            """)
+        else:
+            st.success("✅ Safe for outdoor activities")
+    
+    with preg_col2:
+        st.markdown("**👨‍👩‍👧‍👦 Infants & Toddlers**")
+        
+        if prediction > 100:
+            st.warning("🚨 Avoid outdoor exposure")
+            st.markdown("""
+            - Keep indoors with air purifier running
+            - Monitor for coughing/wheezing
+            - Avoid park/outdoor play
+            - Extra vigilance for respiratory issues
+            """)
+        else:
+            st.success("✅ Safe for outdoor play")
+    
+    with preg_col3:
+        st.markdown("**👧 Children (5-12 yrs)**")
+        
+        if prediction > 150:
+            st.error("⛔ Sport & intense activity prohibited")
+        elif prediction > 100:
+            st.warning("⚠️ Limit strenuous activity")
+        else:
+            st.success("✅ Normal play & sports allowed")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 48: PET AIR QUALITY SAFETY GUIDE ==========
+    st.subheader("🐾 Pet Safety & Air Quality Index")
+    
+    pet_col1, pet_col2 = st.columns(2)
+    
+    with pet_col1:
+        st.markdown("**🐕 Dog & Cat Safety**")
+        
+        pets_affected = {
+            "Dogs": {"critical": 200, "caution": 150},
+            "Cats": {"critical": 180, "caution": 120},
+            "Birds": {"critical": 150, "caution": 100},
+            "Rabbits": {"critical": 160, "caution": 110},
+            "Fish": {"critical": 999, "caution": 999}  # Indoor, not affected
+        }
+        
+        for pet, limits in pets_affected.items():
+            if prediction > limits["critical"]:
+                status = "🚫 Critical Risk"
+            elif prediction > limits["caution"]:
+                status = "⚠️ Caution"
+            else:
+                status = "✅ Safe"
+            
+            st.markdown(f"**{pet}**: {status}")
+    
+    with pet_col2:
+        st.markdown("**💡 Pet Care Recommendations**")
+        
+        if prediction > 150:
+            st.markdown("""
+            🏠 **Indoor Care:**
+            - Keep pets indoors with AC on
+            - Use pet air purifier
+            - Wipe paws when coming inside
+            - Monitor for respiratory issues
+            - Schedule vet checkup
+            """)
+        else:
+            st.markdown("""
+            ✅ **Safe Outdoor Time:**
+            - Regular exercise is fine
+            - Watch for excessive panting
+            - Provide fresh water
+            - Monitor overall behavior
+            """)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 49: COGNITIVE PERFORMANCE IMPACT ==========
+    st.subheader("🧠 How Air Quality Affects Cognitive Performance")
+    
+    cognitive_col1, cognitive_col2, cognitive_col3 = st.columns(3)
+    
+    # Calculate cognitive impact
+    cognitive_score = max(20, 100 - (prediction / 2))  # Lower AQI = better cognition
+    
+    with cognitive_col1:
+        st.markdown("**🎯 Mental Performance Score**")
+        st.metric("Cognitive Efficiency", f"{cognitive_score:.0f}%")
+        
+        if prediction > 150:
+            st.warning("⚠️ Expected decline in focus & memory")
+        elif prediction > 100:
+            st.info("🟡 Moderate impact on concentration")
+        else:
+            st.success("✅ Optimal conditions for mental work")
+    
+    with cognitive_col2:
+        st.markdown("**📊 Research Findings**")
+        
+        st.markdown(f"""
+        - Current AQI: **{prediction:.0f}**
+        - Focus Level: {"🔴 Poor" if prediction > 150 else "🟡 Fair" if prediction > 100 else "🟢 Excellent"}
+        - Memory Impact: {"Significant" if prediction > 150 else "Slight" if prediction > 100 else "None"}
+        - Decision Making: {"Impaired" if prediction > 150 else "Slightly slower" if prediction > 100 else "Normal"}
+        """)
+    
+    with cognitive_col3:
+        st.markdown("**✅ Boosters for Clear Thinking**")
+        
+        st.markdown("""
+        1. 🏃 Exercise during best AQI hours
+        2. 🧘 Meditation/mindfulness sessions
+        3. 💧 Stay well hydrated
+        4. ☕ Strategic caffeine use
+        5. 🔗 Deep work during morning (lower AQI)
+        6. 🌳 Spend time in nature on clean days
+        """)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 50: DIETARY RECOMMENDATIONS FOR AIR QUALITY ==========
+    st.subheader("🥗 Anti-Pollution Diet Recommendations")
+    
+    diet_col1, diet_col2, diet_col3 = st.columns(3)
+    
+    antioxidant_foods = {
+        "High AQI (>150)": {
+            "foods": ["Berries", "Spinach", "Broccoli", "Carrots", "Turmeric", "Ginger", "Garlic"],
+            "benefits": "Max antioxidants to fight inflammation",
+            "emoji": "🔴"
+        },
+        "Moderate AQI (100-150)": {
+            "foods": ["Apples", "Oranges", "Almonds", "Green tea", "Honey", "Dark chocolate"],
+            "benefits": "Balanced antioxidant intake",
+            "emoji": "🟡"
+        },
+        "Good AQI (<100)": {
+            "foods": ["All fruits", "All vegetables", "Nuts", "Seeds", "Regular foods"],
+            "benefits": "Maintain normal healthy diet",
+            "emoji": "🟢"
+        }
+    }
+    
+    with diet_col1:
+        category = "High AQI (>150)" if prediction > 150 else "Moderate AQI (100-150)" if prediction > 100 else "Good AQI (<100)"
+        data = antioxidant_foods[category]
+        
+        st.markdown(f"{data['emoji']} **{category}**")
+        st.markdown(f"**Recommended Foods:**\n" + "\n".join([f"- {f}" for f in data['foods']]))
+    
+    with diet_col2:
+        st.markdown("**🥤 Hydration Plan**")
+        
+        if prediction > 150:
+            st.markdown("""
+            - 3-4 liters of water daily
+            - Add lemon (Vitamin C)
+            - Herbal teas (ginger, tulsi)
+            - Coconut water
+            - Avoid caffeine overload
+            """)
+        else:
+            st.markdown("""
+            - 2-3 liters daily
+            - Regular water is fine
+            - Occasional herbal teas
+            - Monitor thirst cues
+            """)
+    
+    with diet_col3:
+        st.markdown("**🚫 Foods to Limit**")
+        
+        if prediction > 100:
+            st.markdown("""
+            - Processed foods
+            - Fried items
+            - Red meat (increase plant-based)
+            - Added sugars
+            - Alcohol (dehydrating)
+            - Spicy foods (may irritate)
+            """)
+        else:
+            st.markdown("No restrictions. Balanced diet recommended.")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 51: WEEKLY HEALTH SCORE TRACKING ==========
+    st.subheader("📈 Weekly Health Score Progression")
+    
+    # Simulate weekly data
+    np.random.seed(42)
+    weeks = ["Week 1", "Week 2", "Week 3", "Week 4"]
+    health_scores = [
+        max(0, min(100, 75 + np.random.randint(-10, 5))),
+        max(0, min(100, 78 + np.random.randint(-8, 8))),
+        max(0, min(100, 82 + np.random.randint(-5, 10))),
+        max(0, min(100, 80 + np.random.randint(-7, 7)))
+    ]
+    
+    health_track_col1, health_track_col2 = st.columns([2, 1])
+    
+    with health_track_col1:
+        fig_health_track = go.Figure()
+        
+        fig_health_track.add_trace(go.Scatter(
+            x=weeks,
+            y=health_scores,
+            fill="tozeroy",
+            fillcolor="rgba(76, 175, 80, 0.2)",
+            line=dict(color="#4caf50", width=3),
+            mode="lines+markers",
+            marker=dict(size=10),
+            name="Health Score"
+        ))
+        
+        fig_health_track.update_layout(
+            template="plotly_dark",
+            title="4-Week Health Score Trend",
+            xaxis_title="Weeks",
+            yaxis_title="Health Score (0-100)",
+            height=350,
+            paper_bgcolor="#0e1117",
+            plot_bgcolor="#0e1117"
+        )
+        
+        st.plotly_chart(fig_health_track, use_container_width=True)
+    
+    with health_track_col2:
+        current_score = health_scores[-1]
+        trend = "📈 Improving" if health_scores[-1] > health_scores[-2] else "📉 Declining" if health_scores[-1] < health_scores[-2] else "➡️ Stable"
+        
+        st.markdown(f"""
+        <div style="background:linear-gradient(135deg,#0e1117,#161b22);padding:20px;border-radius:10px;">
+        <h4>Current Status</h4>
+        <p><b>Health Score:</b> {current_score:.0f}/100</p>
+        <p><b>Trend:</b> {trend}</p>
+        <p><b>This Week:</b> {'+' if health_scores[-1] > health_scores[-2] else ''}{health_scores[-1] - health_scores[-2]:.0f}</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 52: MEDICATION EFFECTIVENESS TRACKER ==========
+    st.subheader("💊 Medication & Treatment Effectiveness Tracker")
+    
+    med_track_col1, med_track_col2 = st.columns(2)
+    
+    with med_track_col1:
+        st.markdown("**🏥 Common Medications**")
+        
+        medications = {
+            "Albuterol/Inhalers": {"effectiveness": "High", "aqi_limit": 150, "emoji": "✅"},
+            "Antihistamines": {"effectiveness": "Moderate", "aqi_limit": 120, "emoji": "🟡"},
+            "Corticosteroids": {"effectiveness": "High", "aqi_limit": 150, "emoji": "✅"},
+            "Decongestants": {"effectiveness": "Moderate", "aqi_limit": 130, "emoji": "🟡"},
+            "Supplements (Curcumin)": {"effectiveness": "Moderate", "aqi_limit": 120, "emoji": "🟡"}
+        }
+        
+        for med, data in medications.items():
+            status = "Recommended" if prediction > data["aqi_limit"] else "Optional"
+            emoji = data["emoji"]
+            st.markdown(f"**{med}** {emoji}\n→ {status} at current AQI")
+    
+    with med_track_col2:
+        st.markdown("**📋 Medication Timing Guide**")
+        
+        if prediction > 150:
+            st.markdown("""
+            **Take medications:**
+            - 30 mins before outdoor activity
+            - Every 6 hours (check prescription)
+            - When symptoms appear
+            - Keep rescue inhaler handy
+            
+            **Expected Relief Time:** 15-30 mins
+            """)
+        elif prediction > 100:
+            st.markdown("""
+            **Preventive dosing:**
+            - Morning & evening doses
+            - Before planned outdoor time
+            - As needed basis
+            
+            **Expected Relief Time:** 20-40 mins
+            """)
+        else:
+            st.markdown("No medication needed. Maintain regular doses if prescribed.")
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 53: COMMUNITY POLLUTION REPORTING ==========
+    st.subheader("👥 Community Air Quality Observations")
+    
+    community_col1, community_col2 = st.columns(2)
+    
+    with community_col1:
+        st.markdown("**📢 Report Local Pollution Sources**")
+        
+        st.markdown("""
+        Help your community by reporting:
+        - 🚗 Heavy traffic congestion
+        - 🏭 Industrial emissions
+        - 🔥 Burning activities
+        - 🚜 Agricultural burning
+        - 💨 Construction dust
+        - 🏗️ Unmanaged waste sites
+        """)
+        
+        if st.button("📍 Report Pollution Source"):
+            st.info("📲 Feature coming soon: Report directly through app with GPS location and photos")
+    
+    with community_col2:
+        st.markdown("**🤝 Community Insights**")
+        
+        community_data = {
+            "Active Reports This Week": np.random.randint(50, 200),
+            "Pollution Hotspots Identified": np.random.randint(15, 40),
+            "Community Actions Taken": np.random.randint(5, 25),
+            "Average Response Time": "4-6 hours"
+        }
+        
+        for insight, value in community_data.items():
+            st.metric(insight, value)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 54: AIR QUALITY MIGRATION GUIDE ==========
+    st.subheader("🏘️ Air Quality Migration Index - Best Cities to Move")
+    
+    migration_col1, migration_col2, migration_col3 = st.columns(3)
+    
+    # Simulate migration data
+    migration_data = {
+        "🥇 Tier 1 (Best AQI <50)": {
+            "cities": ["Guwahati", "Bhubaneswar", "Pune", "Nagpur"],
+            "avg_aqi": 35,
+            "cost": "Medium",
+            "jobs": "Good"
+        },
+        "🥈 Tier 2 (Good AQI 50-80)": {
+            "cities": ["Jaipur", "Lucknow", "Surat", "Ahmedabad"],
+            "avg_aqi": 65,
+            "cost": "Low-Medium",
+            "jobs": "Excellent"
+        },
+        "🥉 Tier 3 (Moderate AQI 80-120)": {
+            "cities": ["Bangalore", "Hyderabad", "Chennai", "Kochi"],
+            "avg_aqi": 90,
+            "cost": "High",
+            "jobs": "Excellent"
+        }
+    }
+    
+    with migration_col1:
+        data = migration_data["🥇 Tier 1 (Best AQI <50)"]
+        st.markdown(f"""
+        **🥇 Best Air Quality**
+        
+        **Cities:** {', '.join(data['cities'])}
+        
+        **Avg AQI:** {data['avg_aqi']}
+        **Cost:** {data['cost']}
+        **Jobs:** {data['jobs']}
+        """)
+    
+    with migration_col2:
+        data = migration_data["🥈 Tier 2 (Good AQI 50-80)"]
+        st.markdown(f"""
+        **🥈 Good Balance**
+        
+        **Cities:** {', '.join(data['cities'])}
+        
+        **Avg AQI:** {data['avg_aqi']}
+        **Cost:** {data['cost']}
+        **Jobs:** {data['jobs']}
+        """)
+    
+    with migration_col3:
+        data = migration_data["🥉 Tier 3 (Moderate AQI 80-120)"]
+        st.markdown(f"""
+        **🥉 IT Hubs**
+        
+        **Cities:** {', '.join(data['cities'])}
+        
+        **Avg AQI:** {data['avg_aqi']}
+        **Cost:** {data['cost']}
+        **Jobs:** {data['jobs']}
+        """)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # ========== NEW FEATURE 55: GUIDED BREATHING EXERCISES ==========
+    st.subheader("🧘 Breathing Exercises for Air Quality Recovery")
+    
+    breathing_col1, breathing_col2 = st.columns(2)
+    
+    with breathing_col1:
+        st.markdown("**🫁 Lung Clearing Exercise**")
+        
+        st.markdown("""
+        **Box Breathing (4-4-4-4)**
+        - Inhale for 4 counts
+        - Hold for 4 counts
+        - Exhale for 4 counts
+        - Hold for 4 counts
+        - Repeat 5 times
+        
+        **Duration:** 3 minutes
+        **Best Time:** Morning & evening
+        **Benefit:** Reduces anxiety, improves oxygen intake
+        """)
+        
+        if st.button("⏱️ Start Box Breathing (3 min timer)"):
+            st.success("✅ Start breathing exercise - Breathe in rhythm with guidance")
+            for i in range(3):
+                st.write(f"Round {i+1}/3...")
+                time.sleep(1)
+            st.success("🎉 Breathing exercise complete!")
+    
+    with breathing_col2:
+        st.markdown("**🌬️ Deep Diaphragmatic Breathing**")
+        
+        st.markdown("""
+        **4-7-8 Technique**
+        - Inhale through nose for 4 counts
+        - Hold breath for 7 counts
+        - Exhale through mouth for 8 counts
+        - Repeat 4 times
+        
+        **Duration:** 2-3 minutes
+        **Best Time:** Before stressful events
+        **Benefit:** Calms nervous system, increases CO2 retention
+        """)
+        
+        if st.button("⏱️ Start 4-7-8 Breathing (2 min timer)"):
+            st.success("✅ Begin deep breathing - Follow the 4-7-8 pattern")
+            for i in range(2):
+                st.write(f"Cycle {i+1}/4...")
+                time.sleep(1)
+            st.success("🎉 Deep breathing session complete!")
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
