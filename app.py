@@ -3398,10 +3398,16 @@ if st.session_state.prediction is not None:
         
         if st.button("⏱️ Start Box Breathing (3 min timer)"):
             st.success("✅ Start breathing exercise - Breathe in rhythm with guidance")
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+            
             for i in range(3):
-                st.write(f"Round {i+1}/3...")
-                time.sleep(1)
-            st.success("🎉 Breathing exercise complete!")
+                status_text.write(f"Round {i+1}/3... Breathe in for 4, Hold for 4, Exhale for 4, Hold for 4")
+                progress_bar.progress((i + 1) / 3)
+            
+            progress_bar.progress(1.0)
+            status_text.empty()
+            st.success("🎉 Breathing exercise complete! Feel more relaxed.")
     
     with breathing_col2:
         st.markdown("**🌬️ Deep Diaphragmatic Breathing**")
@@ -3420,9 +3426,15 @@ if st.session_state.prediction is not None:
         
         if st.button("⏱️ Start 4-7-8 Breathing (2 min timer)"):
             st.success("✅ Begin deep breathing - Follow the 4-7-8 pattern")
-            for i in range(2):
-                st.write(f"Cycle {i+1}/4...")
-                time.sleep(1)
-            st.success("🎉 Deep breathing session complete!")
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+            
+            for i in range(4):
+                status_text.write(f"Cycle {i+1}/4... Inhale (4) → Hold (7) → Exhale (8)")
+                progress_bar.progress((i + 1) / 4)
+            
+            progress_bar.progress(1.0)
+            status_text.empty()
+            st.success("🎉 Deep breathing session complete! You should feel more calm.")
     
     st.markdown("<br><br>", unsafe_allow_html=True)
