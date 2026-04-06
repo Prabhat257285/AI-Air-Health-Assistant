@@ -3704,7 +3704,7 @@ if st.session_state.prediction is not None:
         ✅ Plan seasonal migrations
         """)
     
-    st.markdown("<br>", unsafe_before_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     
     # ========== AI FEATURE 60: ANOMALY DETECTION WITH ML ==========
     st.subheader("🚨 AI Anomaly Detection System")
